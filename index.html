@@ -673,22 +673,40 @@
       }, 1200);
     }
 
+    // function finishGame() {
+    //   studentData.score = score;
+    //   const safeSession = sanitizeKey(activeSessionKey);
+
+    //   // ส่งผลคะแนนขึ้น Cloud ทันที
+    //   fetch(`${FIREBASE_DB_URL}attendance/${safeSession}/${studentData.id}.json`, {
+    //     method: "PUT",
+    //     body: JSON.stringify(studentData)
+    //   })
+    //   .then(() => fetchLeaderboard(safeSession))
+    //   .catch(err => console.error(err));
+
+    //   document.getElementById('step-quiz').classList.add('hidden');
+    //   document.getElementById('step-result').classList.remove('hidden');
+    //   document.getElementById('myFinalScore').innerText = `${score} แต้ม`;
+    // }
+
     function finishGame() {
-      studentData.score = score;
-      const safeSession = sanitizeKey(activeSessionKey);
+  studentData.score = score; // บันทึกคะแนน
+  const safeSession = sanitizeKey(activeSessionKey);
 
-      // ส่งผลคะแนนขึ้น Cloud ทันที
-      fetch(`${FIREBASE_DB_URL}attendance/${safeSession}/${studentData.id}.json`, {
-        method: "PUT",
-        body: JSON.stringify(studentData)
-      })
-      .then(() => fetchLeaderboard(safeSession))
-      .catch(err => console.error(err));
+  // ส่งขึ้น Firebase
+  fetch(`${FIREBASE_DB_URL}attendance/${safeSession}/${studentData.id}.json`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(studentData)
+  })
+  .then(() => fetchLeaderboard(safeSession))
+  .catch(err => console.error("Send score error:", err));
 
-      document.getElementById('step-quiz').classList.add('hidden');
-      document.getElementById('step-result').classList.remove('hidden');
-      document.getElementById('myFinalScore').innerText = `${score} แต้ม`;
-    }
+  document.getElementById('step-quiz').classList.add('hidden');
+  document.getElementById('step-result').classList.remove('hidden');
+  document.getElementById('myFinalScore').innerText = `${score} แต้ม`;
+}
 
     function fetchLeaderboard(safeSession) {
       fetch(`${FIREBASE_DB_URL}attendance/${safeSession}.json`)

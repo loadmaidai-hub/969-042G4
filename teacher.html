@@ -30,7 +30,7 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      padding: 2rem 1.5rem;
+      padding: 1.5rem 1rem;
       background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
       text-align: center;
     }
@@ -38,7 +38,7 @@
     .projector-card {
       background: white;
       border-radius: 28px;
-      padding: 2.5rem 3rem;
+      padding: 2.2rem 1.8rem;
       max-width: 880px;
       width: 100%;
       box-shadow: 0 20px 40px rgba(67, 56, 202, 0.12);
@@ -69,17 +69,19 @@
       font-size: 0.95rem;
     }
 
+    /* ปรับขนาด PIN ให้พอดีทั้งมือถือและจอโปรเจกเตอร์ ไม่ตกบรรทัด */
     .big-pin {
-      font-size: 5rem;
+      font-size: clamp(2.8rem, 9vw, 5rem);
       font-weight: 800;
       color: var(--primary);
-      letter-spacing: 12px;
+      letter-spacing: clamp(4px, 2vw, 12px);
       background: #EEF2FF;
-      padding: 0.8rem 2rem;
+      padding: 0.8rem 1.2rem;
       border-radius: 20px;
       margin: 1rem 0 0.5rem;
       border: 3px dashed var(--primary);
       user-select: all;
+      white-space: nowrap;
     }
 
     .timer-container { width: 100%; max-width: 480px; margin: 0 auto 1.2rem; }
@@ -143,7 +145,6 @@
     .kpi-card.red { border-left-color: var(--danger); }
     .kpi-num { font-size: 2rem; font-weight: 700; margin-top: 0.3rem; }
 
-    /* Dashboard Leaderboard */
     .dashboard-leaderboard-box {
       background: white;
       border-radius: 16px;
@@ -203,7 +204,7 @@
       <div class="live-badge">🟢 CLASS IS LIVE • เช็คชื่อ & ประลองความรู้</div>
       <div class="schedule-tag">⏰ ทุกวันพุธ 10.30 - 12.20 น. | ห้องเรียน 6310</div>
       
-      <h2 style="font-size: 1.15rem; color: #64748B; font-weight:500;">969-042G4 การใช้ปัญญาประดิษฐ์ในชีวิตประจำวัน[cite: 1]</h2>
+      <h2 style="font-size: 1.15rem; color: #64748B; font-weight:500;">969-042G4 การใช้ปัญญาประดิษฐ์ในชีวิตประจำวัน</h2>
       <h1 style="font-size: 1.85rem; font-weight:700; margin-top: 0.3rem; color: var(--dark);" id="projectorSessionTitle">
         สัปดาห์ที่ 1 : 16 กันยายน 2569 (ห้อง 6310)
       </h1>
@@ -239,7 +240,7 @@
     <div class="header-bar">
       <div>
         <h1 style="font-size: 1.5rem; font-weight: 700;">แผงวิเคราะห์และสรุปผลคะแนนประจำวิชา (Teacher Dashboard)</h1>
-        <p style="color: #64748B; font-size: 0.9rem;">วิชา 969-042G4 | วันพุธ 10.30 - 12.20 น. ห้อง 6310[cite: 1]</p>
+        <p style="color: #64748B; font-size: 0.9rem;">วิชา 969-042G4 | วันพุธ 10.30 - 12.20 น. ห้อง 6310</p>
       </div>
       <button class="btn btn-gray" onclick="lockBackToProjector()">🖥️ กลับสู่หน้าจอโปรเจกเตอร์</button>
     </div>
@@ -353,7 +354,6 @@
   </div>
 
   <script>
-    // URL ฐานข้อมูล Firebase จริงของรายวิชา
     const FIREBASE_DB_URL = "https://class-psu-default-rtdb.asia-southeast1.firebasedatabase.app/";
     const TEACHER_PASSWORD = "admin1234";
 
@@ -399,7 +399,6 @@
       startAutoPINCycle();
     }
 
-    // สุ่ม PIN ทันทีบนจอ แล้วจึงค่อยซิงก์ขึ้น Firebase แบบ Fail-safe
     function generateNewPIN() {
       const newPin = Math.floor(1000 + Math.random() * 9000).toString();
       document.getElementById('bigPinText').innerText = newPin;
@@ -501,7 +500,7 @@
       if (mode === 'SUMMARY') {
         cutoffWrapper.style.display = 'none';
         dlBox.style.display = 'none';
-        document.getElementById('kpiTitle1').innerText = "เข้าเรียน ≥ 80% (สิทธิ์สอบ)";[cite: 1]
+        document.getElementById('kpiTitle1').innerText = "เข้าเรียน ≥ 80% (สิทธิ์สอบ)";
         document.getElementById('kpiTitle2').innerText = "เฝ้าระวัง (50-79%)";
         document.getElementById('kpiTitle3').innerText = "ขาดเกินเกณฑ์ (< 50%)";
 
@@ -573,7 +572,6 @@
         const sessionRecords = realtimeData[safeSession] || {};
         const cutoff = document.getElementById('cutoffTime').value;
 
-        // อัปเดตตาราง Leaderboard 5 อันดับแรก
         const submittedList = Object.values(sessionRecords);
         submittedList.sort((a, b) => b.score - a.score);
 

@@ -310,16 +310,20 @@
 
     // ยิง PIN ขึ้น Cloud Realtime
     function generateNewPIN() {
+      // 1. สุ่มเลขแล้วแสดงผลบนหน้าจอทันที ไม่ต้องรอเน็ต
       const newPin = Math.floor(1000 + Math.random() * 9000).toString();
       document.getElementById('bigPinText').innerText = newPin;
       secondsLeft = PIN_LIFETIME;
       updateProgressBar();
 
-      // บันทึกขึ้น Firebase
+      // 2. ค่อยส่งข้อมูลขึ้น Cloud สำรองไว้
       fetch(`${FIREBASE_DB_URL}current_pin.json`, {
         method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newPin)
-      }).catch(err => console.error("Cloud Error:", err));
+      }).catch(err => {
+        console.warn("Cloud Sync Warning (ยังใช้ PIN บนจอได้ตามปกติ):", err);
+      });
     }
 
     function syncSessionToCloud(sessionName) {

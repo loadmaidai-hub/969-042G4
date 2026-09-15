@@ -23,6 +23,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kanit', sans-serif !important; }
     body { background-color: var(--light-bg); color: var(--dark); min-height: 100vh; }
 
+    /* VIEW 1: จอโปรเจกเตอร์ */
     .projector-view {
       display: flex;
       flex-direction: column;
@@ -103,6 +104,7 @@
       width: 260px;
     }
 
+    /* VIEW 2: แดชบอร์ดอาจารย์ */
     .dashboard-view { padding: 1.5rem; display: none; }
 
     .header-bar {
@@ -138,6 +140,7 @@
     .kpi-card.red { border-left-color: var(--danger); }
     .kpi-num { font-size: 2rem; font-weight: 700; margin-top: 0.3rem; }
 
+    /* Dashboard Leaderboard */
     .dashboard-leaderboard-box {
       background: white;
       border-radius: 16px;
@@ -191,7 +194,7 @@
 </head>
 <body>
 
-  <!-- VIEW 1: หน้าจอฉายโปรเจกเตอร์ -->
+  <!-- VIEW 1: จอโปรเจกเตอร์ -->
   <div id="viewProjector" class="projector-view">
     <div class="projector-card">
       <div class="live-badge">🟢 CLASS IS LIVE • เช็คชื่อ & ประลองความรู้</div>
@@ -269,6 +272,7 @@
       </div>
     </div>
 
+    <!-- การ์ด KPI -->
     <div class="kpi-grid">
       <div class="kpi-card">
         <div style="font-size: 0.9rem; color:#64748B;">นักศึกษาทั้งหมด</div>
@@ -345,7 +349,6 @@
   </div>
 
   <script>
-    // URL ฐานข้อมูล Firebase จริงของรายวิชา
     const FIREBASE_DB_URL = "https://class-psu-default-rtdb.asia-southeast1.firebasedatabase.app/";
     const TEACHER_PASSWORD = "admin1234";
 
@@ -492,7 +495,7 @@
       if (mode === 'SUMMARY') {
         cutoffWrapper.style.display = 'none';
         dlBox.style.display = 'none';
-        document.getElementById('kpiTitle1').innerText = "เข้าเรียน ≥ 80% (สิทธิ์สอบ)";[cite: 1]
+        document.getElementById('kpiTitle1').innerText = "เข้าเรียน ≥ 80% (สิทธิ์สอบ)";[cite: 1, 2]
         document.getElementById('kpiTitle2').innerText = "เฝ้าระวัง (50-79%)";
         document.getElementById('kpiTitle3').innerText = "ขาดเกินเกณฑ์ (< 50%)";
 

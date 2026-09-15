@@ -23,13 +23,14 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kanit', sans-serif !important; }
     body { background-color: var(--light-bg); color: var(--dark); min-height: 100vh; }
 
+    /* VIEW 1: จอโปรเจกเตอร์ */
     .projector-view {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      padding: 2rem;
+      padding: 2rem 1.5rem;
       background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
       text-align: center;
     }
@@ -37,8 +38,8 @@
     .projector-card {
       background: white;
       border-radius: 28px;
-      padding: 3rem;
-      max-width: 820px;
+      padding: 2.5rem 3rem;
+      max-width: 880px;
       width: 100%;
       box-shadow: 0 20px 40px rgba(67, 56, 202, 0.12);
       border-top: 8px solid var(--primary);
@@ -51,8 +52,8 @@
       font-weight: 700;
       padding: 0.4rem 1.2rem;
       border-radius: 9999px;
-      margin-bottom: 0.8rem;
-      font-size: 1rem;
+      margin-bottom: 0.6rem;
+      font-size: 0.95rem;
       animation: pulse 2s infinite;
     }
     @keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
@@ -64,31 +65,31 @@
       font-weight: 600;
       padding: 0.35rem 1rem;
       border-radius: 8px;
-      margin-bottom: 1rem;
+      margin-bottom: 0.8rem;
       font-size: 0.95rem;
     }
 
     .big-pin {
-      font-size: 5.5rem;
+      font-size: 5rem;
       font-weight: 800;
       color: var(--primary);
       letter-spacing: 12px;
       background: #EEF2FF;
-      padding: 1rem 2rem;
+      padding: 0.8rem 2rem;
       border-radius: 20px;
-      margin: 1.2rem 0 0.6rem;
+      margin: 1rem 0 0.5rem;
       border: 3px dashed var(--primary);
       user-select: all;
     }
 
-    .timer-container { width: 100%; max-width: 480px; margin: 0 auto 1.5rem; }
+    .timer-container { width: 100%; max-width: 480px; margin: 0 auto 1.2rem; }
     .timer-text { display: flex; justify-content: space-between; font-size: 0.95rem; color: #64748B; font-weight: 600; margin-bottom: 0.4rem; }
     .progress-bar-bg { width: 100%; height: 9px; background-color: #E2E8F0; border-radius: 999px; overflow: hidden; }
     .progress-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--primary)); border-radius: 999px; transition: width 1s linear; }
 
     .auth-box {
-      margin-top: 1.8rem;
-      padding-top: 1.6rem;
+      margin-top: 1.5rem;
+      padding-top: 1.3rem;
       border-top: 1.5px dashed #CBD5E1;
       display: flex;
       justify-content: center;
@@ -97,15 +98,16 @@
     }
 
     .auth-box input[type="password"] {
-      padding: 0.8rem 1.2rem;
+      padding: 0.75rem 1.2rem;
       border-radius: 12px;
       border: 1.5px solid #CBD5E1;
-      font-size: 1rem;
+      font-size: 0.95rem;
       outline: none;
-      width: 280px;
+      width: 260px;
     }
     .auth-box input[type="password"]:focus { border-color: var(--primary); }
 
+    /* VIEW 2: แดชบอร์ดอาจารย์ */
     .dashboard-view { padding: 1.5rem; display: none; }
 
     .header-bar {
@@ -141,6 +143,41 @@
     .kpi-card.red { border-left-color: var(--danger); }
     .kpi-num { font-size: 2rem; font-weight: 700; margin-top: 0.3rem; }
 
+    /* ตารางอันดับคะแนนในหน้าแผงควบคุมอาจารย์ */
+    .dashboard-leaderboard-box {
+      background: white;
+      border-radius: 16px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      border-left: 5px solid #F59E0B;
+    }
+
+    .dl-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.9rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1.5px solid #F1F5F9;
+    }
+
+    .dl-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.8rem;
+    }
+
+    .dl-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+    }
+
     .btn { padding: 0.65rem 1.2rem; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; font-size: 0.95rem; transition: all 0.2s; }
     .btn-primary { background: var(--primary); color: white; }
     .btn-secondary { background: var(--secondary); color: white; }
@@ -166,12 +203,12 @@
       <div class="live-badge">🟢 CLASS IS LIVE • เช็คชื่อ & ประลองความรู้</div>
       <div class="schedule-tag">⏰ ทุกวันพุธ 10.30 - 12.20 น. | ห้องเรียน 6310</div>
       
-      <h2 style="font-size: 1.2rem; color: #64748B; font-weight:500;">969-042G4 การใช้ปัญญาประดิษฐ์ในชีวิตประจำวัน</h2>
-      <h1 style="font-size: 1.95rem; font-weight:700; margin-top: 0.4rem; color: var(--dark);" id="projectorSessionTitle">
+      <h2 style="font-size: 1.15rem; color: #64748B; font-weight:500;">969-042G4 การใช้ปัญญาประดิษฐ์ในชีวิตประจำวัน</h2>
+      <h1 style="font-size: 1.85rem; font-weight:700; margin-top: 0.3rem; color: var(--dark);" id="projectorSessionTitle">
         สัปดาห์ที่ 1 : 16 กันยายน 2569 (ห้อง 6310)
       </h1>
       
-      <p style="margin-top: 0.8rem; color:#64748B;">ให้นักศึกษาสแกนพิกัด GPS ตรวจชื่อ และใส่รหัสเข้าห้องสด:</p>
+      <p style="margin-top: 0.6rem; color:#64748B; font-size: 0.95rem;">สแกนพิกัด GPS ตรวจชื่อ และใส่รหัสเข้าห้องสด:</p>
       <div class="big-pin" id="bigPinText">----</div>
 
       <div class="timer-container">
@@ -184,7 +221,7 @@
         </div>
       </div>
 
-      <div style="display:flex; justify-content:center; gap: 0.8rem; flex-wrap: wrap;">
+      <div style="display:flex; justify-content:center; gap: 0.8rem; flex-wrap: wrap; margin-top: 1.2rem;">
         <button class="btn btn-primary" onclick="forceResetPIN()">⚡ สุ่ม PIN เดี๋ยวนี้</button>
         <button class="btn btn-gray" onclick="quickSelectSession()">📅 สลับสัปดาห์สอน</button>
       </div>
@@ -193,7 +230,7 @@
         <input type="password" id="teacherPassInput" placeholder="ใส่รหัสอาจารย์เพื่อเข้าแดชบอร์ด" onkeydown="handlePassEnter(event)">
         <button class="btn btn-secondary" onclick="unlockDashboard()">เข้าสู่แผงควบคุมอาจารย์ 🔒</button>
       </div>
-      <p id="authErrorMsg" style="color:var(--danger); font-size:0.85rem; margin-top:0.5rem; display:none;">❌ รหัสผ่านไม่ถูกต้อง!</p>
+      <p id="authErrorMsg" style="color:var(--danger); font-size:0.85rem; margin-top:0.4rem; display:none;">❌ รหัสผ่านไม่ถูกต้อง!</p>
     </div>
   </div>
 
@@ -201,12 +238,13 @@
   <div id="viewDashboard" class="dashboard-view">
     <div class="header-bar">
       <div>
-        <h1 style="font-size: 1.5rem; font-weight: 700;">แผงวิเคราะห์และสรุปผลคะแนนประจำวิชา (Realtime)</h1>
+        <h1 style="font-size: 1.5rem; font-weight: 700;">แผงวิเคราะห์และสรุปผลคะแนนประจำวิชา (Teacher Dashboard)</h1>
         <p style="color: #64748B; font-size: 0.9rem;">วิชา 969-042G4 | วันพุธ 10.30 - 12.20 น. ห้อง 6310</p>
       </div>
       <button class="btn btn-gray" onclick="lockBackToProjector()">🖥️ กลับสู่หน้าจอโปรเจกเตอร์</button>
     </div>
 
+    <!-- แถบเลือกสัปดาห์ -->
     <div class="session-bar">
       <div style="display:flex; align-items:center; gap: 0.8rem; flex-wrap: wrap;">
         <label for="sessionSelect" style="font-weight: 600;">เลือกคาบเรียน:</label>
@@ -237,6 +275,7 @@
       </div>
     </div>
 
+    <!-- การ์ด KPI -->
     <div class="kpi-grid">
       <div class="kpi-card">
         <div style="font-size: 0.9rem; color:#64748B;">นักศึกษาทั้งหมด</div>
@@ -256,6 +295,18 @@
       </div>
     </div>
 
+    <!-- ตารางอันดับคะแนน (Leaderboard ในหน้าแผงควบคุมอาจารย์) -->
+    <div class="dashboard-leaderboard-box" id="dashboardLeaderboardContainer">
+      <div class="dl-header">
+        <strong style="font-size: 1.05rem; color: var(--dark);">🏆 อันดับคะแนนสูงสุดประจำคาบ (Top 5 Leaderboard)</strong>
+        <span style="font-size: 0.85rem; color: #64748B;">อัปเดตสด Realtime</span>
+      </div>
+      <div class="dl-grid" id="dashboardLeaderboardGrid">
+        <p style="color:#94A3B8; font-size:0.88rem; grid-column: 1/-1;">ยังไม่มีนักศึกษาส่งคะแนนในคาบนี้</p>
+      </div>
+    </div>
+
+    <!-- ตารางรายชื่อนักศึกษาทั้งหมด 65 คน -->
     <div class="table-box">
       <table>
         <thead id="tableHead"></thead>
@@ -266,9 +317,9 @@
 
   <script>
     // *************************************************************
-    // วาง Database URL ของ Firebase ตรงนี้ (ต้องลงท้ายด้วย /)
+    // Database URL ของ Firebase (ต้องลงท้ายด้วย /)
     // *************************************************************
-    const FIREBASE_DB_URL = "https://class-psu-default-rtdb.asia-southeast1.firebasedatabase.app/";
+    const FIREBASE_DB_URL = "https://ai-class-pkru-default-rtdb.asia-southeast1.firebasedatabase.app/";
     const TEACHER_PASSWORD = "admin1234";
 
     const studentRoster = {
@@ -308,18 +359,20 @@
       startAutoPINCycle();
     }
 
-    // ยิง PIN ขึ้น Cloud Realtime
     function generateNewPIN() {
       const newPin = Math.floor(1000 + Math.random() * 9000).toString();
-      document.getElementById('bigPinText').innerText = newPin;
-      secondsLeft = PIN_LIFETIME;
-      updateProgressBar();
 
-      // บันทึกขึ้น Firebase
       fetch(`${FIREBASE_DB_URL}current_pin.json`, {
         method: "PUT",
         body: JSON.stringify(newPin)
-      }).catch(err => console.error("Cloud Error:", err));
+      })
+      .then(res => res.json())
+      .then(savedPin => {
+        document.getElementById('bigPinText').innerText = savedPin;
+        secondsLeft = PIN_LIFETIME;
+        updateProgressBar();
+      })
+      .catch(err => console.error("Cloud Error:", err));
     }
 
     function syncSessionToCloud(sessionName) {
@@ -359,6 +412,10 @@
       }
     }
 
+    function sanitizeKey(key) {
+      return key.replace(/[\.\#\$\[\]\/]/g, "_");
+    }
+
     function handlePassEnter(e) { if (e.key === "Enter") unlockDashboard(); }
 
     function unlockDashboard() {
@@ -382,14 +439,11 @@
       document.getElementById('viewProjector').style.display = "flex";
     }
 
-    function changeSession() {
-      renderAnalytics();
-    }
+    function changeSession() { renderAnalytics(); }
 
-    // ดึงข้อมูล Realtime จาก Cloud มาแสดงบน Dashboard
     function startRealtimeListener() {
       fetchDataFromCloud();
-      setInterval(fetchDataFromCloud, 3000); // ดึงข้อมูลอัปเดตทุก 3 วินาที
+      setInterval(fetchDataFromCloud, 3000);
     }
 
     function fetchDataFromCloud() {
@@ -402,19 +456,18 @@
         .catch(err => console.error(err));
     }
 
-    function sanitizeKey(key) {
-      return key.replace(/[\.\#\$\[\]\/]/g, "_");
-    }
-
     function renderAnalytics() {
       const mode = document.getElementById('sessionSelect').value;
       const thead = document.getElementById('tableHead');
       const tbody = document.getElementById('tableBody');
       const cutoffWrapper = document.getElementById('cutoffContainer');
+      const dlBox = document.getElementById('dashboardLeaderboardContainer');
+      const dlGrid = document.getElementById('dashboardLeaderboardGrid');
 
       if (mode === 'SUMMARY') {
         cutoffWrapper.style.display = 'none';
-        document.getElementById('kpiTitle1').innerText = "เข้าเรียน ≥ 80% (สิทธิ์สอบ)";
+        dlBox.style.display = 'none'; // ซ่อนตารางคะแนนเดี่ยวเมื่อดูภาพรวมทั้งเทอม
+        document.getElementById('kpiTitle1').innerText = "เข้าเรียน ≥ 80% (สิทธิ์สอบ)";[cite: 1]
         document.getElementById('kpiTitle2').innerText = "เฝ้าระวัง (50-79%)";
         document.getElementById('kpiTitle3').innerText = "ขาดเกินเกณฑ์ (< 50%)";
 
@@ -477,6 +530,7 @@
 
       } else {
         cutoffWrapper.style.display = 'inline-block';
+        dlBox.style.display = 'block';
         document.getElementById('kpiTitle1').innerText = "เข้าเรียนตรงเวลา";
         document.getElementById('kpiTitle2').innerText = "มาสาย (หลัง 10:45)";
         document.getElementById('kpiTitle3').innerText = "ขาดเรียน (Absent)";
@@ -484,6 +538,33 @@
         const safeSession = sanitizeKey(mode);
         const sessionRecords = realtimeData[safeSession] || {};
         const cutoff = document.getElementById('cutoffTime').value;
+
+        // อัปเดตตารางอันดับคะแนน (Top 5) ในหน้า Dashboard
+        const submittedList = Object.values(sessionRecords);
+        submittedList.sort((a, b) => b.score - a.score);
+
+        if (submittedList.length === 0) {
+          dlGrid.innerHTML = `<p style="color:#94A3B8; font-size:0.88rem; grid-column: 1/-1;">ยังไม่มีนักศึกษาส่งคะแนนในคาบนี้</p>`;
+        } else {
+          dlGrid.innerHTML = '';
+          submittedList.slice(0, 5).forEach((item, idx) => {
+            let medal = `#${idx + 1}`;
+            if (idx === 0) medal = '🥇';
+            if (idx === 1) medal = '🥈';
+            if (idx === 2) medal = '🥉';
+
+            const card = document.createElement('div');
+            card.className = 'dl-card';
+            card.innerHTML = `
+              <div style="display:flex; align-items:center; gap:0.5rem; overflow:hidden;">
+                <span style="font-weight:700; width:20px;">${medal}</span>
+                <span style="font-weight:500; text-overflow:ellipsis; white-space:nowrap; overflow:hidden;">${item.name}</span>
+              </div>
+              <strong style="color:var(--primary); margin-left:0.5rem;">${item.score} แต้ม</strong>
+            `;
+            dlGrid.appendChild(card);
+          });
+        }
 
         thead.innerHTML = `
           <tr>
@@ -525,7 +606,7 @@
             <td>${studentRoster[id]}</td>
             <td><span class="tag ${tagClass}">${statusText}</span></td>
             <td>${rec ? rec.timestamp : '-'}</td>
-            <td>${rec ? rec.score + ' แต้ม' : '-'}</td>
+            <td><strong style="color:var(--primary);">${rec ? rec.score + ' แต้ม' : '-'}</strong></td>
             <td>${rec ? rec.distance + ' ม.' : '-'}</td>
             <td><small>${rec ? (rec.ip || '-') : '-'}</small></td>
           `;

@@ -390,7 +390,8 @@
     let realtimeData = {};
 
     function sanitizeKey(key) {
-      return encodeURIComponent(key).replace(/[\.\#\$\[\]\/%]/g, "_");
+      // return encodeURIComponent(key).replace(/[\.\#\$\[\]\/%]/g, "_");
+      return key.replace(/[\.\#\$\[\]\/]/g, "_");
     }
 
     function initProjectorView() {

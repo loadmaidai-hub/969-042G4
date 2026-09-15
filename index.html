@@ -243,23 +243,23 @@
     const FIREBASE_DB_URL = "https://class-psu-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
     // พิกัดห้องเรียน 6310 อาคาร 6 มหาวิทยาลัยสงขลานครินทร์ วิทยาเขตภูเก็ต
-    // const TARGET_LOCATION = {
-    //   lat: 7.893821,
-    //   lng: 98.353005,
-    //   radiusMeters: 90
-    // };
-
     const TARGET_LOCATION = {
-      lat: 7.867225,       // ละติจูด
-      lng: 98.369837,      // ลองจิจูด
-      radiusMeters: 3000    // รัศมีที่อนุญาต (120 เมตร ครอบคลุมพื้นที่อาคาร รพ.)
+      lat: 7.893821,
+      lng: 98.353005,
+      radiusMeters: 1000
     };
+
+    // const TARGET_LOCATION = {
+    //   lat: 7.867225,       // ละติจูด
+    //   lng: 98.369837,      // ลองจิจูด
+    //   radiusMeters: 3000    // รัศมีที่อนุญาต (120 เมตร ครอบคลุมพื้นที่อาคาร รพ.)
+    // };
     let clientIP = "กำลังดึงข้อมูล...";
     fetch('https://api.ipify.org?format=json')
       .then(res => res.json())
       .then(data => {
         clientIP = data.ip;
-        document.getElementById('geoStatus').innerText = "📡 เรดาร์พร้อมทำงาน (IP: " + clientIP + ")";
+        document.getElementById('geoStatus').innerText = "📡 (IP: " + clientIP + ")";
       })
       .catch(() => {
         clientIP = "ไม่สามารถระบุได้";

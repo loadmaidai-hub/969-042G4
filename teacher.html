@@ -54,9 +54,7 @@
       border-radius: 9999px;
       margin-bottom: 0.6rem;
       font-size: 0.95rem;
-      animation: pulse 2s infinite;
     }
-    @keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
 
     .schedule-tag {
       display: inline-block;
@@ -105,7 +103,6 @@
       outline: none;
       width: 260px;
     }
-    .auth-box input[type="password"]:focus { border-color: var(--primary); }
 
     /* VIEW 2: แดชบอร์ดอาจารย์ */
     .dashboard-view { padding: 1.5rem; display: none; }
@@ -143,7 +140,7 @@
     .kpi-card.red { border-left-color: var(--danger); }
     .kpi-num { font-size: 2rem; font-weight: 700; margin-top: 0.3rem; }
 
-    /* ตารางอันดับคะแนนในหน้าแผงควบคุมอาจารย์ */
+    /* Dashboard Leaderboard */
     .dashboard-leaderboard-box {
       background: white;
       border-radius: 16px;
@@ -197,7 +194,7 @@
 </head>
 <body>
 
-  <!-- VIEW 1: จอโปรเจกเตอร์ -->
+  <!-- VIEW 1: หน้าจอฉายโปรเจกเตอร์ -->
   <div id="viewProjector" class="projector-view">
     <div class="projector-card">
       <div class="live-badge">🟢 CLASS IS LIVE • เช็คชื่อ & ประลองความรู้</div>
@@ -244,7 +241,6 @@
       <button class="btn btn-gray" onclick="lockBackToProjector()">🖥️ กลับสู่หน้าจอโปรเจกเตอร์</button>
     </div>
 
-    <!-- แถบเลือกสัปดาห์ -->
     <div class="session-bar">
       <div style="display:flex; align-items:center; gap: 0.8rem; flex-wrap: wrap;">
         <label for="sessionSelect" style="font-weight: 600;">เลือกคาบเรียน:</label>
@@ -295,7 +291,7 @@
       </div>
     </div>
 
-    <!-- ตารางอันดับคะแนน (Leaderboard ในหน้าแผงควบคุมอาจารย์) -->
+    <!-- กล่อง Leaderboard หน้า Dashboard -->
     <div class="dashboard-leaderboard-box" id="dashboardLeaderboardContainer">
       <div class="dl-header">
         <strong style="font-size: 1.05rem; color: var(--dark);">🏆 อันดับคะแนนสูงสุดประจำคาบ (Top 5 Leaderboard)</strong>
@@ -306,7 +302,7 @@
       </div>
     </div>
 
-    <!-- ตารางรายชื่อนักศึกษาทั้งหมด 65 คน -->
+    <!-- ตารางข้อมูลนักศึกษา 65 คน -->
     <div class="table-box">
       <table>
         <thead id="tableHead"></thead>
@@ -317,10 +313,10 @@
 
   <script>
     // *************************************************************
-    // Database URL ของ Firebase (ต้องลงท้ายด้วย /)
+    // ใส่ URL Firebase ของคุณ (ต้องลงท้ายด้วย /)
     // *************************************************************
     const FIREBASE_DB_URL = "https://class-psu-default-rtdb.asia-southeast1.firebasedatabase.app/";
-    const TEACHER_PASSWORD = "exzmqe1234";
+    const TEACHER_PASSWORD = "admin1234";
 
     const studentRoster = {
       "6730611001": "คุณานนต์ แพใหญ่", "6730611002": "สุชัญญา หลายกิจวุฒิพันธ์", "6730611004": "ชนาภา อุดมทรัพย์",
@@ -350,8 +346,13 @@
     const PIN_LIFETIME = 120;
     let secondsLeft = PIN_LIFETIME;
     let pinTimerInterval = null;
+    let dashboardPollingInterval = null;
     let currentSessionKey = "Week 1 (16 ก.ย. 2569)";
     let realtimeData = {};
+
+    function sanitizeKey(key) {
+      return encodeURIComponent(key).replace(/[\.\#\$\[\]\/%]/g, "_");
+    }
 
     function initProjectorView() {
       document.getElementById('projectorSessionTitle').innerText = currentSessionKey;
@@ -364,6 +365,7 @@
 
       fetch(`${FIREBASE_DB_URL}current_pin.json`, {
         method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newPin)
       })
       .then(res => res.json())
@@ -372,12 +374,16 @@
         secondsLeft = PIN_LIFETIME;
         updateProgressBar();
       })
-      .catch(err => console.error("Cloud Error:", err));
+      .catch(err => {
+        console.error("Cloud Error:", err);
+        document.getElementById('bigPinText').innerText = newPin;
+      });
     }
 
     function syncSessionToCloud(sessionName) {
       fetch(`${FIREBASE_DB_URL}current_session.json`, {
         method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(sessionName)
       }).catch(err => console.error(err));
     }
@@ -396,7 +402,7 @@
     }
 
     function updateProgressBar() {
-      const pct = (secondsLeft / PIN_LIFETIME) * 100;
+      const pct = Math.max(0, (secondsLeft / PIN_LIFETIME) * 100);
       document.getElementById('progressBarFill').style.width = `${pct}%`;
       const m = Math.floor(secondsLeft / 60);
       const s = secondsLeft % 60;
@@ -412,10 +418,6 @@
       }
     }
 
-    function sanitizeKey(key) {
-      return key.replace(/[\.\#\$\[\]\/]/g, "_");
-    }
-
     function handlePassEnter(e) { if (e.key === "Enter") unlockDashboard(); }
 
     function unlockDashboard() {
@@ -428,23 +430,23 @@
         document.getElementById('viewProjector').style.display = "none";
         document.getElementById('viewDashboard').style.display = "block";
         document.getElementById('sessionSelect').value = currentSessionKey;
-        startRealtimeListener();
+
+        // ดึงข้อมูลแดชบอร์ดทันทีและตั้ง loop แยก ไม่ตีกับเวลา PIN
+        fetchDataFromCloud();
+        if (dashboardPollingInterval) clearInterval(dashboardPollingInterval);
+        dashboardPollingInterval = setInterval(fetchDataFromCloud, 3000);
       } else {
         err.style.display = "block";
       }
     }
 
     function lockBackToProjector() {
+      if (dashboardPollingInterval) clearInterval(dashboardPollingInterval);
       document.getElementById('viewDashboard').style.display = "none";
       document.getElementById('viewProjector').style.display = "flex";
     }
 
     function changeSession() { renderAnalytics(); }
-
-    function startRealtimeListener() {
-      fetchDataFromCloud();
-      setInterval(fetchDataFromCloud, 3000);
-    }
 
     function fetchDataFromCloud() {
       fetch(`${FIREBASE_DB_URL}attendance.json`)
@@ -453,7 +455,7 @@
           realtimeData = data || {};
           renderAnalytics();
         })
-        .catch(err => console.error(err));
+        .catch(err => console.error("Fetch Data Error:", err));
     }
 
     function renderAnalytics() {
@@ -466,7 +468,7 @@
 
       if (mode === 'SUMMARY') {
         cutoffWrapper.style.display = 'none';
-        dlBox.style.display = 'none'; // ซ่อนตารางคะแนนเดี่ยวเมื่อดูภาพรวมทั้งเทอม
+        dlBox.style.display = 'none';
         document.getElementById('kpiTitle1').innerText = "เข้าเรียน ≥ 80% (สิทธิ์สอบ)";[cite: 1]
         document.getElementById('kpiTitle2').innerText = "เฝ้าระวัง (50-79%)";
         document.getElementById('kpiTitle3').innerText = "ขาดเกินเกณฑ์ (< 50%)";
@@ -539,7 +541,7 @@
         const sessionRecords = realtimeData[safeSession] || {};
         const cutoff = document.getElementById('cutoffTime').value;
 
-        // อัปเดตตารางอันดับคะแนน (Top 5) ในหน้า Dashboard
+        // Render Top 5 Leaderboard
         const submittedList = Object.values(sessionRecords);
         submittedList.sort((a, b) => b.score - a.score);
 
@@ -670,6 +672,7 @@
       }
     }
 
+    // เริ่มทำงานเมื่อเปิดหน้า
     initProjectorView();
   </script>
 </body>

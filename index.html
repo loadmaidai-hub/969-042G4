@@ -407,6 +407,35 @@
       return R * c;
     }
 
+    function verifyRoomPinLive() {
+  const pinInput = document.getElementById('roomPin');
+  const feedback = document.getElementById('pinFeedback');
+  const enteredPin = pinInput.value.trim();
+  const currentActivePin = localStorage.getItem('ai_class_current_pin') || "7492";
+
+  // ยังพิมพ์ไม่ครบ 4 หลัก
+  if (enteredPin.length < 4) {
+    pinInput.style.borderColor = "#CBD5E1";
+    feedback.innerText = "";
+    return false;
+  }
+
+  // พิมพ์ครบ 4 หลักแล้ว ตรวจสอบทันที
+  if (enteredPin === currentActivePin) {
+    pinInput.style.borderColor = "var(--secondary)";
+    pinInput.style.backgroundColor = "#DEF7EC";
+    feedback.style.color = "var(--secondary)";
+    feedback.innerText = "✓ รหัสห้องถูกต้อง พร้อมสแกนพิกัด";
+    return true;
+  } else {
+    pinInput.style.borderColor = "var(--danger)";
+    pinInput.style.backgroundColor = "#FDE8E8";
+    feedback.style.color = "var(--danger)";
+    feedback.innerText = "✗ รหัสไม่ถูกต้อง หรือรหัสรอบนี้หมดอายุแล้ว (รีเซ็ตทุก 2 นาที)";
+    return false;
+  }
+}
+
     function verifyAndStart() {
       const pin = document.getElementById('roomPin').value.trim();
       const id = document.getElementById('stuId').value.trim();

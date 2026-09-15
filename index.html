@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Class Radar & Arena - 969-042G4</title>
+  <title>AI Class - 969-042G4</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -179,7 +179,7 @@
     <div id="step-register">
       <div class="badge" id="currentSessionTag">969-042G4 • กำลังเชื่อมต่อ Cloud...</div>
       <h1>สนามประลองความรู้</h1>
-      <p class="subtitle">ระบบจะตรวจจับพิกัดห้องเรียน และยืนยันรหัสเข้าห้องสด</p>
+      <p class="subtitle">ระบบยืนยันตัวตน</p>
 
       <div class="radar-box">
         <div class="radar-sweep"></div>
@@ -196,7 +196,7 @@
 
       <div class="form-group">
         <label for="stuId">รหัสนักศึกษา (Student ID)</label>
-        <input type="text" id="stuId" placeholder="พิมพ์รหัสแล้วกด Enter เช่น 6730611001" onkeydown="handleIdEnter(event)" oninput="autoFillName()" onblur="autoFillName()">
+        <input type="text" id="stuId" placeholder="พิมพ์รหัสแล้วกด Enter" onkeydown="handleIdEnter(event)" oninput="autoFillName()" onblur="autoFillName()">
       </div>
 
       <div class="form-group">
@@ -204,7 +204,7 @@
         <input type="text" id="stuName" placeholder="ชื่อจะปรากฏอัตโนมัติเมื่อกด Enter" readonly>
       </div>
 
-      <button class="btn" onclick="verifyAndStart()">สแกนพิกัด & เข้าสู่การประลอง 🚀</button>
+      <button class="btn" onclick="verifyAndStart()">เข้าสู่การประลอง 🚀</button>
     </div>
 
     <!-- STEP 2 -->

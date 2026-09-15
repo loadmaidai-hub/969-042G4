@@ -211,7 +211,16 @@
 
       <div class="form-group">
         <label for="roomPin">รหัสผ่านเข้าห้องสด (Room PIN บนจอหน้าห้อง)</label>
-        <input type="text" id="roomPin" placeholder="เช่น 7492" maxlength="6">
+        <input 
+        type="text" 
+        id="roomPin" 
+        placeholder="รหัส 4 หลัก" 
+        maxlength="4" 
+        inputmode="numeric" 
+        pattern="[0-9]*"
+        oninput="verifyRoomPinLive()"
+        >
+        <small id="pinFeedback" style="display:block; margin-top:0.3rem; font-size:0.85rem; font-weight:500;"></small>
       </div>
 
       <div class="form-group">

@@ -54,7 +54,9 @@
       border-radius: 9999px;
       margin-bottom: 0.6rem;
       font-size: 0.95rem;
+      animation: pulse 2s infinite;
     }
+    @keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
 
     .schedule-tag {
       display: inline-block;
@@ -103,6 +105,7 @@
       outline: none;
       width: 260px;
     }
+    .auth-box input[type="password"]:focus { border-color: var(--primary); }
 
     /* VIEW 2: แดชบอร์ดอาจารย์ */
     .dashboard-view { padding: 1.5rem; display: none; }
@@ -140,7 +143,7 @@
     .kpi-card.red { border-left-color: var(--danger); }
     .kpi-num { font-size: 2rem; font-weight: 700; margin-top: 0.3rem; }
 
-    /* Dashboard Leaderboard */
+    /* ตารางอันดับคะแนนในหน้าแผงควบคุมอาจารย์ */
     .dashboard-leaderboard-box {
       background: white;
       border-radius: 16px;
@@ -241,6 +244,7 @@
       <button class="btn btn-gray" onclick="lockBackToProjector()">🖥️ กลับสู่หน้าจอโปรเจกเตอร์</button>
     </div>
 
+    <!-- แถบเลือกสัปดาห์ -->
     <div class="session-bar">
       <div style="display:flex; align-items:center; gap: 0.8rem; flex-wrap: wrap;">
         <label for="sessionSelect" style="font-weight: 600;">เลือกคาบเรียน:</label>
@@ -266,7 +270,6 @@
       </div>
 
       <div style="display:flex; gap: 0.6rem;">
-        <button class="btn btn-primary" onclick="openManualModal()">➕ เช็คชื่อด้วยตนเอง</button>
         <button class="btn btn-secondary" onclick="exportCSV()">📥 โหลด Excel (CSV)</button>
         <button class="btn btn-danger" onclick="clearCurrentSessionData()">ล้างข้อมูลคาบนี้</button>
       </div>
@@ -292,7 +295,7 @@
       </div>
     </div>
 
-    <!-- กล่อง Leaderboard หน้า Dashboard -->
+    <!-- ตารางอันดับคะแนน (Leaderboard ในหน้าแผงควบคุมอาจารย์) -->
     <div class="dashboard-leaderboard-box" id="dashboardLeaderboardContainer">
       <div class="dl-header">
         <strong style="font-size: 1.05rem; color: var(--dark);">🏆 อันดับคะแนนสูงสุดประจำคาบ (Top 5 Leaderboard)</strong>
@@ -303,54 +306,21 @@
       </div>
     </div>
 
-    <!-- ตารางข้อมูลนักศึกษา 65 คน -->
+    <!-- ตารางรายชื่อนักศึกษาทั้งหมด 65 คน -->
     <div class="table-box">
       <table>
         <thead id="tableHead"></thead>
         <tbody id="tableBody"></tbody>
       </table>
     </div>
-
-    <!-- Modal: เช็คชื่อแทนนักศึกษา -->
-    <div id="manualModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
-      <div style="background:white; padding:2rem; border-radius:20px; max-width:460px; width:90%; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
-        <h3 style="margin-bottom:1rem; font-size:1.25rem;">📝 บันทึกเช็คชื่อแทนนักศึกษา (Manual)</h3>
-        
-        <div style="margin-bottom:0.8rem; text-align:left;">
-          <label style="font-size:0.9rem; font-weight:600;">รหัสนักศึกษา (10 หลัก):</label>
-          <input type="text" id="manualStuId" placeholder="เช่น 6730611001" style="width:100%; padding:0.6rem; margin-top:0.3rem; border:1.5px solid #CBD5E1; border-radius:8px;" oninput="previewManualName()">
-        </div>
-
-        <div style="margin-bottom:0.8rem; text-align:left;">
-          <label style="font-size:0.9rem; font-weight:600;">ชื่อ - นามสกุล:</label>
-          <input type="text" id="manualStuName" readonly placeholder="จะแสดงอัตโนมัติ" style="width:100%; padding:0.6rem; margin-top:0.3rem; border:1.5px solid #CBD5E1; border-radius:8px; background:#F1F5F9;">
-        </div>
-
-        <div style="display:flex; gap:0.8rem; margin-bottom:1.2rem;">
-          <div style="flex:1; text-align:left;">
-            <label style="font-size:0.9rem; font-weight:600;">สถานะเวลา:</label>
-            <select id="manualStatus" style="width:100%; padding:0.6rem; margin-top:0.3rem;">
-              <option value="on-time">มาตรงเวลา (10:30)</option>
-              <option value="late">มาสาย (10:50)</option>
-            </select>
-          </div>
-          <div style="flex:1; text-align:left;">
-            <label style="font-size:0.9rem; font-weight:600;">คะแนนควิซ:</label>
-            <input type="number" id="manualScore" value="100" min="0" max="250" style="width:100%; padding:0.6rem; margin-top:0.3rem; border:1.5px solid #CBD5E1; border-radius:8px;">
-          </div>
-        </div>
-
-        <div style="display:flex; justify-content:flex-end; gap:0.6rem;">
-          <button class="btn btn-gray" onclick="closeManualModal()">ยกเลิก</button>
-          <button class="btn btn-secondary" onclick="submitManualCheckin()">บันทึกข้อมูล ✓</button>
-        </div>
-      </div>
-    </div>
   </div>
 
   <script>
+    // *************************************************************
+    // Database URL ของ Firebase (ต้องลงท้ายด้วย /)
+    // *************************************************************
     const FIREBASE_DB_URL = "https://class-psu-default-rtdb.asia-southeast1.firebasedatabase.app/";
-    const TEACHER_PASSWORD = "admin1234";
+    const TEACHER_PASSWORD = "exzmqe1234";
 
     const studentRoster = {
       "6730611001": "คุณานนต์ แพใหญ่", "6730611002": "สุชัญญา หลายกิจวุฒิพันธ์", "6730611004": "ชนาภา อุดมทรัพย์",
@@ -380,13 +350,8 @@
     const PIN_LIFETIME = 120;
     let secondsLeft = PIN_LIFETIME;
     let pinTimerInterval = null;
-    let dashboardPollingInterval = null;
     let currentSessionKey = "Week 1 (16 ก.ย. 2569)";
     let realtimeData = {};
-
-    function sanitizeKey(key) {
-      return encodeURIComponent(key).replace(/[\.\#\$\[\]\/%]/g, "_");
-    }
 
     function initProjectorView() {
       document.getElementById('projectorSessionTitle').innerText = currentSessionKey;
@@ -396,21 +361,23 @@
 
     function generateNewPIN() {
       const newPin = Math.floor(1000 + Math.random() * 9000).toString();
-      document.getElementById('bigPinText').innerText = newPin;
-      secondsLeft = PIN_LIFETIME;
-      updateProgressBar();
 
       fetch(`${FIREBASE_DB_URL}current_pin.json`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newPin)
-      }).catch(err => console.warn("Firebase Warning:", err));
+      })
+      .then(res => res.json())
+      .then(savedPin => {
+        document.getElementById('bigPinText').innerText = savedPin;
+        secondsLeft = PIN_LIFETIME;
+        updateProgressBar();
+      })
+      .catch(err => console.error("Cloud Error:", err));
     }
 
     function syncSessionToCloud(sessionName) {
       fetch(`${FIREBASE_DB_URL}current_session.json`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(sessionName)
       }).catch(err => console.error(err));
     }
@@ -429,7 +396,7 @@
     }
 
     function updateProgressBar() {
-      const pct = Math.max(0, (secondsLeft / PIN_LIFETIME) * 100);
+      const pct = (secondsLeft / PIN_LIFETIME) * 100;
       document.getElementById('progressBarFill').style.width = `${pct}%`;
       const m = Math.floor(secondsLeft / 60);
       const s = secondsLeft % 60;
@@ -445,6 +412,10 @@
       }
     }
 
+    function sanitizeKey(key) {
+      return key.replace(/[\.\#\$\[\]\/]/g, "_");
+    }
+
     function handlePassEnter(e) { if (e.key === "Enter") unlockDashboard(); }
 
     function unlockDashboard() {
@@ -457,22 +428,23 @@
         document.getElementById('viewProjector').style.display = "none";
         document.getElementById('viewDashboard').style.display = "block";
         document.getElementById('sessionSelect').value = currentSessionKey;
-
-        fetchDataFromCloud();
-        if (dashboardPollingInterval) clearInterval(dashboardPollingInterval);
-        dashboardPollingInterval = setInterval(fetchDataFromCloud, 3000);
+        startRealtimeListener();
       } else {
         err.style.display = "block";
       }
     }
 
     function lockBackToProjector() {
-      if (dashboardPollingInterval) clearInterval(dashboardPollingInterval);
       document.getElementById('viewDashboard').style.display = "none";
       document.getElementById('viewProjector').style.display = "flex";
     }
 
     function changeSession() { renderAnalytics(); }
+
+    function startRealtimeListener() {
+      fetchDataFromCloud();
+      setInterval(fetchDataFromCloud, 3000);
+    }
 
     function fetchDataFromCloud() {
       fetch(`${FIREBASE_DB_URL}attendance.json`)
@@ -481,7 +453,7 @@
           realtimeData = data || {};
           renderAnalytics();
         })
-        .catch(err => console.error("Fetch Data Error:", err));
+        .catch(err => console.error(err));
     }
 
     function renderAnalytics() {
@@ -494,8 +466,8 @@
 
       if (mode === 'SUMMARY') {
         cutoffWrapper.style.display = 'none';
-        dlBox.style.display = 'none';
-        document.getElementById('kpiTitle1').innerText = "เข้าเรียน ≥ 80% (สิทธิ์สอบ)";[cite: 1, 2]
+        dlBox.style.display = 'none'; // ซ่อนตารางคะแนนเดี่ยวเมื่อดูภาพรวมทั้งเทอม
+        document.getElementById('kpiTitle1').innerText = "เข้าเรียน ≥ 80% (สิทธิ์สอบ)";[cite: 1]
         document.getElementById('kpiTitle2').innerText = "เฝ้าระวัง (50-79%)";
         document.getElementById('kpiTitle3').innerText = "ขาดเกินเกณฑ์ (< 50%)";
 
@@ -567,6 +539,7 @@
         const sessionRecords = realtimeData[safeSession] || {};
         const cutoff = document.getElementById('cutoffTime').value;
 
+        // อัปเดตตารางอันดับคะแนน (Top 5) ในหน้า Dashboard
         const submittedList = Object.values(sessionRecords);
         submittedList.sort((a, b) => b.score - a.score);
 
@@ -644,59 +617,6 @@
         document.getElementById('kpiVal2').innerText = late;
         document.getElementById('kpiVal3').innerText = absent;
       }
-    }
-
-    function openManualModal() {
-      document.getElementById('manualStuId').value = "";
-      document.getElementById('manualStuName').value = "";
-      document.getElementById('manualModal').style.display = "flex";
-    }
-
-    function closeManualModal() {
-      document.getElementById('manualModal').style.display = "none";
-    }
-
-    function previewManualName() {
-      const id = document.getElementById('manualStuId').value.trim();
-      const nameBox = document.getElementById('manualStuName');
-      nameBox.value = studentRoster[id] || "❌ ไม่พบรหัสนักศึกษานี้";
-    }
-
-    function submitManualCheckin() {
-      const id = document.getElementById('manualStuId').value.trim();
-      const name = studentRoster[id];
-      const status = document.getElementById('manualStatus').value;
-      const score = parseInt(document.getElementById('manualScore').value) || 0;
-      const mode = document.getElementById('sessionSelect').value;
-
-      if (!name) {
-        alert("กรุณากรอกรหัสนักศึกษาให้ถูกต้อง");
-        return;
-      }
-
-      const safeSession = sanitizeKey(mode);
-      const timestamp = status === 'on-time' ? "10:30" : "10:50";
-
-      const manualPayload = {
-        id: id,
-        name: name,
-        timestamp: timestamp,
-        score: score,
-        distance: 0,
-        ip: "Manual by Instructor"
-      };
-
-      fetch(`${FIREBASE_DB_URL}attendance/${safeSession}/${id}.json`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(manualPayload)
-      })
-      .then(() => {
-        alert(`บันทึกการเข้าเรียนของ ${name} เรียบร้อยแล้ว`);
-        closeManualModal();
-        fetchDataFromCloud();
-      })
-      .catch(err => alert("เกิดข้อผิดพลาด: " + err));
     }
 
     function exportCSV() {

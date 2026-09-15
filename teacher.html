@@ -479,16 +479,6 @@
     }
 
     function changeSession() { renderAnalytics(); }
-
-    // function fetchDataFromCloud() {
-    //   fetch(`${FIREBASE_DB_URL}attendance.json`)
-    //     .then(res => res.json())
-    //     .then(data => {
-    //       realtimeData = data || {};
-    //       renderAnalytics();
-    //     })
-    //     .catch(err => console.error("Fetch Data Error:", err));
-    // }
     
     function fetchDataFromCloud() {
       fetch(`${FIREBASE_DB_URL}attendance.json`)

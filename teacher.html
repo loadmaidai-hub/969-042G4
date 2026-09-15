@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Control Center - 969-042G4</title>
+  <!-- Google Fonts: Kanit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #4338CA;
+      --secondary: #059669;
+      --accent-amber: #D97706;
+      --accent-cyan: #0284C7;
+      --dark: #1E293B;
+      --light-bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --danger: #DC2626;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kanit', sans-serif !important; }
+    body { background-color: var(--light-bg); color: var(--dark); min-height: 100vh; }
+
+    /* VIEW 1: หน้าจอฉายโปรเจกเตอร์ */
+    .projector-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+      text-align: center;
+    }
+
+    .projector-card {
+      background: white;
+      border-radius: 28px;
+      padding: 3rem;
+      max-width: 820px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(67, 56, 202, 0.12);
+      border-top: 8px solid var(--primary);
+    }
+
+    .live-badge {
+      display: inline-block;
+      background: #DEF7EC;
+      color: var(--secondary);
+      font-weight: 700;
+      padding: 0.4rem 1.2rem;
+      border-radius: 9999px;
+      margin-bottom: 0.8rem;
+      font-size: 1rem;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
+
+    .schedule-tag {
+      display: inline-block;
+      background: #EEF2FF;
+      color: var(--primary);
+      font-weight: 600;
+      padding: 0.35rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .big-pin {
+      font-size: 5.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: 12px;
+      background: #EEF2FF;
+      padding: 1rem 2rem;
+      border-radius: 20px;
+      margin: 1.2rem 0 0.6rem;
+      border: 3px dashed var(--primary);
+      user-select: all;
+    }
+
+    /* Countdown Bar สำหรับ 2 นาที */
+    .timer-container {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .timer-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
+      color: #64748B;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 9px;
+      background-color: #E2E8F0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--primary));
+      border-radius: 999px;
+      transition: width 1s linear;
+    }
+
+    .auth-box {
+      margin-top: 1.8rem;
+      padding-top: 1.6rem;
+      border-top: 1.5px dashed #CBD5E1;
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .auth-box input[type="password"] {
+      padding: 0.8rem 1.2rem;
+      border-radius: 12px;
+      border: 1.5px solid #CBD5E1;
+      font-size: 1rem;
+      outline: none;
+      width: 280px;
+    }
+    .auth-box input[type="password"]:focus { border-color: var(--primary); }
+
+    /* VIEW 2: แดชบอร์ดอาจารย์ */
+    .dashboard-view { padding: 1.5rem; display: none; }
+
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      background: white;
+      padding: 1.2rem 1.8rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+      border-top: 5px solid var(--primary);
+    }
+
+    .session-bar {
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: 14px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    select, input[type="time"] {
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      border: 1.5px solid #CBD5E1;
+      font-size: 0.95rem;
+      outline: none;
+      background-color: white;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .kpi-card {
+      background: white;
+      padding: 1.2rem;
+      border-radius: 14px;
+      border-left: 5px solid var(--primary);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .kpi-card.green { border-left-color: var(--secondary); }
+    .kpi-card.amber { border-left-color: var(--accent-amber); }
+    .kpi-card.red { border-left-color: var(--danger); }
+    .kpi-num { font-size: 2rem; font-weight: 700; margin-top: 0.3rem; }
+
+    .btn {
+      padding: 0.65rem 1.2rem;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-secondary { background: var(--secondary); color: white; }
+    .btn-danger { background: #FEE2E2; color: var(--danger); }
+    .btn-gray { background: #E2E8F0; color: #475569; }
+
+    .table-box {
+      background: white;
+      border-radius: 14px;
+      padding: 1.2rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      overflow-x: auto;
+    }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 0.75rem 1rem; border-bottom: 1px solid #E2E8F0; font-size: 0.95rem; }
+    th { background: #F8FAFC; color: #475569; }
+
+    .tag { padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; }
+    .tag-present { background: #DEF7EC; color: #03543F; }
+    .tag-late { background: #FEF3C7; color: #92400E; }
+    .tag-absent { background: #FDE8E8; color: #9B1C1C; }
+  </style>
+</head>
+<body>
+
+  <!-- VIEW 1: หน้าจอฉายโปรเจกเตอร์ -->
+  <div id="viewProjector" class="projector-view">
+    <div class="projector-card">
+      <div class="live-badge">🟢 CLASS IS LIVE • เช็คชื่อ & ประลองความรู้</div>
+      <div class="schedule-tag">⏰ ทุกวันพุธ 10.30 - 12.20 น. | ห้องเรียน 6310</div>
+      
+      <h2 style="font-size: 1.2rem; color: #64748B; font-weight:500;">969-042G4 การใช้ปัญญาประดิษฐ์ในชีวิตประจำวัน</h2>
+      <h1 style="font-size: 1.95rem; font-weight:700; margin-top: 0.4rem; color: var(--dark);" id="projectorSessionTitle">
+        สัปดาห์ที่ 1 : 16 กันยายน 2569 (ห้อง 6310)
+      </h1>
+      
+      <p style="margin-top: 0.8rem; color:#64748B;">ให้นักศึกษาสแกนพิกัด GPS ตรวจชื่อ และใส่รหัสเข้าห้องสด:</p>
+      
+      <div class="big-pin" id="bigPinText">----</div>
+
+      <!-- แถบนับเวลาถอยหลัง 2 นาที (120 วินาที) -->
+      <div class="timer-container">
+        <div class="timer-text">
+          <span>🔄 รหัสจะรีเซ็ตอัตโนมัติใน:</span>
+          <span id="countdownText" style="color:var(--accent-amber);">2:00 นาที</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:center; gap: 0.8rem; flex-wrap: wrap;">
+        <button class="btn btn-primary" onclick="forceResetPIN()">⚡ สุ่ม PIN เดี๋ยวนี้</button>
+        <button class="btn btn-gray" onclick="quickSelectSession()">📅 สลับสัปดาห์สอน</button>
+      </div>
+
+      <!-- ล็อกอินอาจารย์ -->
+      <div class="auth-box">
+        <input type="password" id="teacherPassInput" placeholder="ใส่รหัสอาจารย์เพื่อเข้าแดชบอร์ด" onkeydown="handlePassEnter(event)">
+        <button class="btn btn-secondary" onclick="unlockDashboard()">เข้าสู่แผงควบคุมอาจารย์ 🔒</button>
+      </div>
+      <p id="authErrorMsg" style="color:var(--danger); font-size:0.85rem; margin-top:0.5rem; display:none;">❌ รหัสผ่านไม่ถูกต้อง!</p>
+    </div>
+  </div>
+
+  <!-- VIEW 2: แดชบอร์ดอาจารย์ -->
+  <div id="viewDashboard" class="dashboard-view">
+    
+    <div class="header-bar">
+      <div>
+        <h1 style="font-size: 1.5rem; font-weight: 700;">แผงวิเคราะห์และสรุปผลคะแนนประจำวิชา</h1>
+        <p style="color: #64748B; font-size: 0.9rem;">วิชา 969-042G4 | วันพุธ 10.30 - 12.20 น. ห้อง 6310</p>
+      </div>
+      <button class="btn btn-gray" onclick="lockBackToProjector()">🖥️ กลับสู่หน้าจอโปรเจกเตอร์</button>
+    </div>
+
+    <!-- เมนูเลือกสัปดาห์ (1-11 สัปดาห์) -->
+    <div class="session-bar">
+      <div style="display:flex; align-items:center; gap: 0.8rem; flex-wrap: wrap;">
+        <label for="sessionSelect" style="font-weight: 600;">เลือกคาบเรียน:</label>
+        <select id="sessionSelect" onchange="changeSession()">
+          <option value="Week 1 (16 ก.ย. 2569)">สัปดาห์ที่ 1 : 16 กันยายน 2569 (ห้อง 6310)</option>
+          <option value="Week 2 (23 ก.ย. 2569)">สัปดาห์ที่ 2 : 23 กันยายน 2569</option>
+          <option value="Week 3 (30 ก.ย. 2569)">สัปดาห์ที่ 3 : 30 กันยายน 2569</option>
+          <option value="Week 4 (7 ต.ค. 2569)">สัปดาห์ที่ 4 : 7 ตุลาคม 2569</option>
+          <option value="Week 5 (14 ต.ค. 2569)">สัปดาห์ที่ 5 : 14 ตุลาคม 2569</option>
+          <option value="Week 6 (21 ต.ค. 2569)">สัปดาห์ที่ 6 : 21 ตุลาคม 2569</option>
+          <option value="Week 7 (28 ต.ค. 2569)">สัปดาห์ที่ 7 : 28 ตุลาคม 2569</option>
+          <option value="Week 8 (4 พ.ย. 2569)">สัปดาห์ที่ 8 : 4 พฤศจิกายน 2569</option>
+          <option value="Week 9 (11 พ.ย. 2569)">สัปดาห์ที่ 9 : 11 พฤศจิกายน 2569</option>
+          <option value="Week 10 (18 พ.ย. 2569)">สัปดาห์ที่ 10 : 18 พฤศจิกายน 2569</option>
+          <option value="Week 11 (25 พ.ย. 2569)">สัปดาห์ที่ 11 : 25 พฤศจิกายน 2569</option>
+          <option value="SUMMARY">📊 [สรุปภาพรวม 11 สัปดาห์สะสม (ตรวจสิทธิ์ 80%)]</option>
+        </select>
+
+        <span id="cutoffContainer">
+          <label for="cutoffTime" style="font-weight: 500; margin-left:0.5rem;">ตัดเวลาสาย (น.):</label>
+          <input type="time" id="cutoffTime" value="10:45" onchange="renderAnalytics()">
+        </span>
+      </div>
+
+      <div style="display:flex; gap: 0.6rem;">
+        <button class="btn btn-secondary" onclick="exportCSV()">📥 โหลด Excel (CSV)</button>
+        <button class="btn btn-danger" onclick="clearCurrentSessionData()">ล้างข้อมูลคาบนี้</button>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div style="font-size: 0.9rem; color:#64748B;">นักศึกษาทั้งหมด</div>
+        <div class="kpi-num">65</div>
+      </div>
+      <div class="kpi-card green">
+        <div style="font-size: 0.9rem; color:var(--secondary);" id="kpiTitle1">เข้าเรียนตรงเวลา</div>
+        <div class="kpi-num" id="kpiVal1" style="color:var(--secondary);">0</div>
+      </div>
+      <div class="kpi-card amber">
+        <div style="font-size: 0.9rem; color:var(--accent-amber);" id="kpiTitle2">มาสาย (หลัง 10:45)</div>
+        <div class="kpi-num" id="kpiVal2" style="color:var(--accent-amber);">0</div>
+      </div>
+      <div class="kpi-card red">
+        <div style="font-size: 0.9rem; color:var(--danger);" id="kpiTitle3">ขาดเรียน (Absent)</div>
+        <div class="kpi-num" id="kpiVal3" style="color:var(--danger);">65</div>
+      </div>
+    </div>
+
+    <!-- ตารางข้อมูลนักศึกษา 65 คน -->
+    <div class="table-box">
+      <table>
+        <thead id="tableHead"></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    const TEACHER_PASSWORD = "admin1234";
+
+    const studentRoster = {
+      "6730611001": "คุณานนต์ แพใหญ่", "6730611002": "สุชัญญา หลายกิจวุฒิพันธ์", "6730611004": "ชนาภา อุดมทรัพย์",
+      "6730611005": "จิรเมธ สุขลี่", "6730611006": "ธนกฤต จริยวัตกุล", "6730611007": "ภูริณัฐ มะนะโส",
+      "6730611008": "ธนวัต เอกบุตร", "6730611009": "เบญญภา ทองขาว", "6730611010": "ณิชตา คำวาศรี",
+      "6730611011": "เสาวลักษณ์ วรพงศ์วัฒน์", "6730611012": "ทักษิณารัตย์ พัฒสงค์", "6730611013": "โชติธนกฤต อารีมิตร",
+      "6730611016": "ภูวเมศฐ์ พงศ์จารุวิชญ์", "6730611017": "กีรดิษ บุญสูง", "6730611019": "ศุภกร ทวีรัตน์",
+      "6730611020": "ณัฐณิชา ศรีธรรม", "6730611021": "สงกรานต์ นนทามิตร", "6730611022": "สิรภัทร นวลแก้ว",
+      "6730611023": "ธนกฤต ดวงแก้ว", "6730611024": "เจษฎา ถวิลถึง", "6730611027": "ธนกฤต คล้ายเเก้ว",
+      "6730611028": "วาที คชลักษ์", "6730611029": "วิสุทธิ์ ณ พัทลุง", "6730611031": "ธนพัฒน์ แสนดี",
+      "6730611032": "พิศุทธิ์ หิรัญจรัสพิวัฒน์", "6730611033": "ธนพล ถาวรมาศ", "6730611034": "ณัฐวดี โภคะศฤงคาร",
+      "6730611035": "กรกฤต นวลละออง", "6730611036": "ธเนศ งามพสุธาดล", "6730611037": "ภัทรพล แซ่หลี",
+      "6730611038": "นิธิทัต ตินตะชาติ", "6730611039": "กนิษฐ หิรัญคุปต์", "6730611043": "พลภัทร จันทรสุต",
+      "6730611044": "วงศกร ศิริคณินทร์", "6730611045": "กิตติพัชญ์ เอกพงศ์วิทย์", "6730611046": "หทัยรัตน์ กิ่งแก้ว",
+      "6730611047": "สิวารักษ์ เศษนาม", "6730611048": "ศุภกร แย้มวาจา", "6730611053": "นิจสิรี สุทธิเจริญ",
+      "6730611054": "อริยะ แพงพา", "6730611055": "รพีภัทร อุตโม", "6730611056": "วศิน เลี่ยมแก้ว",
+      "6730611057": "จักรีพร สุทธิชาติ", "6730611059": "พงศธร ฉิมล่องดำ", "6730611060": "ธวัลรัตน์ คำแหง",
+      "6730611061": "ณัฐสิทธิ์ ทองจันทร์", "6730611062": "ณัฐพงศ์ ตันบำรุง", "6730611063": "เปมิกา สือสกุล",
+      "6730611064": "ธนโชติ สุวรรณวงศ์", "6730611065": "ภควัฒน์ สะมาน", "6730611066": "ซอนญ่า ภักดี",
+      "6730611068": "ฅมกริช พรมปาน", "6730611069": "ไกรสิทธิ์ พัฒโนภาษ", "6730611070": "ขัตติยานนท์ คัยนันท์",
+      "6730611072": "ธันยพงศ์ ถิ่นสืบ", "6730611073": "ฐาปณีย์ รัตนจินดา", "6730611074": "ยุทธภูมิ เพชรบริสุทธิ์",
+      "6730611075": "ธนชาติ เอ่งฉ้วน", "6730611076": "กันตภูมิ คงเจริญ", "6730611077": "วิชยุตม์ บุ้งทอง",
+      "6730611078": "ณัฐภัทร แย้มแก้ว", "6730611080": "พุฒิพงศ์ เรืองอ่อน", "6730611083": "สรณ์สิริ รักไทย",
+      "6730611085": "กันตินันท์ เนาวบุตร", "6730611086": "มูฮัมหมัดลุตฟี สีตีเล๊าะ"
+    };
+
+    // ตั้งเวลารีเซ็ต PIN อัตโนมัติทุก 2 นาที (120 วินาที)
+    const PIN_LIFETIME = 120;
+    let secondsLeft = PIN_LIFETIME;
+    let pinTimerInterval = null;
+
+    function initProjectorView() {
+      let session = localStorage.getItem('ai_current_session') || "Week 1 (16 ก.ย. 2569)";
+      document.getElementById('projectorSessionTitle').innerText = session;
+      startAutoPINCycle();
+    }
+
+    function generateNewPIN() {
+      const newPin = Math.floor(1000 + Math.random() * 9000).toString();
+      localStorage.setItem('ai_class_current_pin', newPin);
+      document.getElementById('bigPinText').innerText = newPin;
+      secondsLeft = PIN_LIFETIME;
+      updateProgressBar();
+    }
+
+    function forceResetPIN() {
+      generateNewPIN();
+    }
+
+    function startAutoPINCycle() {
+      generateNewPIN();
+      if (pinTimerInterval) clearInterval(pinTimerInterval);
+
+      pinTimerInterval = setInterval(() => {
+        secondsLeft--;
+        updateProgressBar();
+
+        if (secondsLeft <= 0) {
+          generateNewPIN();
+        }
+      }, 1000);
+    }
+
+    function updateProgressBar() {
+      const pct = (secondsLeft / PIN_LIFETIME) * 100;
+      document.getElementById('progressBarFill').style.width = `${pct}%`;
+
+      const m = Math.floor(secondsLeft / 60);
+      const s = secondsLeft % 60;
+      const formattedTime = `${m}:${s < 10 ? '0' : ''}${s} นาที`;
+
+      document.getElementById('countdownText').innerText = formattedTime;
+    }
+
+    function quickSelectSession() {
+      const current = localStorage.getItem('ai_current_session') || "Week 1 (16 ก.ย. 2569)";
+      const next = prompt("ระบุสัปดาห์และวันที่สอน (เช่น Week 2 (23 ก.ย. 2569)):", current);
+      if (next) {
+        localStorage.setItem('ai_current_session', next);
+        document.getElementById('projectorSessionTitle').innerText = next;
+      }
+    }
+
+    function handlePassEnter(e) {
+      if (e.key === "Enter") unlockDashboard();
+    }
+
+    function unlockDashboard() {
+      const pass = document.getElementById('teacherPassInput').value;
+      const err = document.getElementById('authErrorMsg');
+
+      if (pass === TEACHER_PASSWORD) {
+        err.style.display = "none";
+        document.getElementById('teacherPassInput').value = "";
+        document.getElementById('viewProjector').style.display = "none";
+        document.getElementById('viewDashboard').style.display = "block";
+        
+        const cur = localStorage.getItem('ai_current_session') || "Week 1 (16 ก.ย. 2569)";
+        document.getElementById('sessionSelect').value = cur;
+        renderAnalytics();
+      } else {
+        err.style.display = "block";
+      }
+    }
+
+    function lockBackToProjector() {
+      document.getElementById('viewDashboard').style.display = "none";
+      document.getElementById('viewProjector').style.display = "flex";
+      initProjectorView();
+    }
+
+    function changeSession() {
+      const sel = document.getElementById('sessionSelect').value;
+      if (sel !== 'SUMMARY') {
+        localStorage.setItem('ai_current_session', sel);
+      }
+      renderAnalytics();
+    }
+
+    function renderAnalytics() {
+      const mode = document.getElementById('sessionSelect').value;
+      const allHistory = JSON.parse(localStorage.getItem('ai_class_all_history') || '{}');
+      const thead = document.getElementById('tableHead');
+      const tbody = document.getElementById('tableBody');
+      const cutoffWrapper = document.getElementById('cutoffContainer');
+
+      if (mode === 'SUMMARY') {
+        cutoffWrapper.style.display = 'none';
+        document.getElementById('kpiTitle1').innerText = "เข้าเรียน ≥ 80% (สิทธิ์สอบ)";
+        document.getElementById('kpiTitle2').innerText = "เฝ้าระวัง (50-79%)";
+        document.getElementById('kpiTitle3').innerText = "ขาดเกินเกณฑ์ (< 50%)";
+
+        const sessions = Object.keys(allHistory);
+        const totalSessions = sessions.length || 1;
+
+        thead.innerHTML = `
+          <tr>
+            <th>รหัสนักศึกษา</th>
+            <th>ชื่อ - นามสกุล</th>
+            <th>จำนวนครั้งที่เข้า</th>
+            <th>% เวลาเรียน</th>
+            <th>คะแนนสะสม (Participation 40%)</th>
+            <th>สถานะสิทธิ์สอบ (เกณฑ์ 80%)</th>
+          </tr>
+        `;
+        tbody.innerHTML = '';
+
+        let passed80 = 0, warning = 0, failed = 0;
+
+        Object.keys(studentRoster).forEach(id => {
+          let attendedCount = 0;
+          let totalScore = 0;
+
+          sessions.forEach(s => {
+            const hit = (allHistory[s] || []).find(r => r.id === id);
+            if (hit) {
+              attendedCount++;
+              totalScore += hit.score;
+            }
+          });
+
+          const pct = Math.round((attendedCount / totalSessions) * 100);
+          let examStatus = `<span class="tag tag-present">มีสิทธิ์สอบ ✓</span>`;
+          if (pct < 80 && pct >= 50) {
+            examStatus = `<span class="tag tag-late">เสี่ยง มส. (${pct}%)</span>`;
+            warning++;
+          } else if (pct < 50) {
+            examStatus = `<span class="tag tag-absent">หมดสิทธิ์สอบ</span>`;
+            failed++;
+          } else {
+            passed80++;
+          }
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${id}</strong></td>
+            <td>${studentRoster[id]}</td>
+            <td>${attendedCount} / ${totalSessions} คาบ</td>
+            <td><strong>${pct}%</strong></td>
+            <td><strong style="color:var(--primary);">${totalScore}</strong> แต้ม</td>
+            <td>${examStatus}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        document.getElementById('kpiVal1').innerText = passed80;
+        document.getElementById('kpiVal2').innerText = warning;
+        document.getElementById('kpiVal3').innerText = failed;
+
+      } else {
+        cutoffWrapper.style.display = 'inline-block';
+        document.getElementById('kpiTitle1').innerText = "เข้าเรียนตรงเวลา";
+        document.getElementById('kpiTitle2').innerText = "มาสาย (หลัง 10:45)";
+        document.getElementById('kpiTitle3').innerText = "ขาดเรียน (Absent)";
+
+        const logs = allHistory[mode] || [];
+        const cutoff = document.getElementById('cutoffTime').value;
+        let submittedMap = {};
+        logs.forEach(l => { submittedMap[l.id] = l; });
+
+        thead.innerHTML = `
+          <tr>
+            <th>รหัสนักศึกษา</th>
+            <th>ชื่อ - นามสกุล</th>
+            <th>สถานะ (${mode})</th>
+            <th>เวลาเช็คชื่อ</th>
+            <th>คะแนนควิซ</th>
+            <th>ระยะ GPS</th>
+            <th>IP Address</th>
+          </tr>
+        `;
+        tbody.innerHTML = '';
+
+        let present = 0, late = 0, absent = 0;
+
+        Object.keys(studentRoster).forEach(id => {
+          const rec = submittedMap[id];
+          let statusText = 'ขาดเรียน';
+          let tagClass = 'tag-absent';
+
+          if (rec) {
+            if (rec.timestamp <= cutoff) {
+              statusText = 'มาตรงเวลา';
+              tagClass = 'tag-present';
+              present++;
+            } else {
+              statusText = 'มาสาย';
+              tagClass = 'tag-late';
+              late++;
+            }
+          } else {
+            absent++;
+          }
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${id}</strong></td>
+            <td>${studentRoster[id]}</td>
+            <td><span class="tag ${tagClass}">${statusText}</span></td>
+            <td>${rec ? rec.timestamp : '-'}</td>
+            <td>${rec ? rec.score + ' แต้ม' : '-'}</td>
+            <td>${rec ? rec.distance + ' ม.' : '-'}</td>
+            <td><small>${rec ? (rec.ip || '-') : '-'}</small></td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        document.getElementById('kpiVal1').innerText = present;
+        document.getElementById('kpiVal2').innerText = late;
+        document.getElementById('kpiVal3').innerText = absent;
+      }
+    }
+
+    function exportCSV() {
+      const mode = document.getElementById('sessionSelect').value;
+      const allHistory = JSON.parse(localStorage.getItem('ai_class_all_history') || '{}');
+      let csv = "";
+
+      if (mode === 'SUMMARY') {
+        const sessions = Object.keys(allHistory);
+        const totalSessions = sessions.length || 1;
+        csv = "\uFEFFรหัสนักศึกษา,ชื่อ-นามสกุล,จำนวนครั้งที่เข้า,จำนวนคาบทั้งหมด,เปอร์เซ็นต์เวลาเรียน,คะแนนสะสม\n";
+        
+        Object.keys(studentRoster).forEach(id => {
+          let count = 0, score = 0;
+          sessions.forEach(s => {
+            const hit = (allHistory[s] || []).find(r => r.id === id);
+            if (hit) { count++; score += hit.score; }
+          });
+          const pct = Math.round((count / totalSessions) * 100);
+          csv += `"${id}","${studentRoster[id]}",${count},${totalSessions},${pct}%,${score}\n`;
+        });
+      } else {
+        const logs = allHistory[mode] || [];
+        const cutoff = document.getElementById('cutoffTime').value;
+        let submittedMap = {};
+        logs.forEach(l => { submittedMap[l.id] = l; });
+
+        csv = `\uFEFFรหัสนักศึกษา,ชื่อ-นามสกุล,สถานะ[${mode}],เวลาเช็คชื่อ,คะแนน,ระยะGPS(เมตร),IP Address\n`;
+        Object.keys(studentRoster).forEach(id => {
+          const rec = submittedMap[id];
+          const st = rec ? (rec.timestamp <= cutoff ? 'มาตรงเวลา' : 'มาสาย') : 'ขาดเรียน';
+          csv += `"${id}","${studentRoster[id]}","${st}","${rec ? rec.timestamp : '-'}","${rec ? rec.score : '0'}","${rec ? rec.distance : '-'}","${rec ? (rec.ip || '-') : '-'}"\n`;
+        });
+      }
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `attendance_${mode.replace(/[\s():/]/g, '_')}.csv`;
+      link.click();
+    }
+
+    function clearCurrentSessionData() {
+      const mode = document.getElementById('sessionSelect').value;
+      if (mode === 'SUMMARY') return alert('ไม่สามารถล้างข้อมูลในโหมดสรุปภาพรวมได้');
+      if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการล้างข้อมูลเฉพาะของ "${mode}"?`)) {
+        let allHistory = JSON.parse(localStorage.getItem('ai_class_all_history') || '{}');
+        delete allHistory[mode];
+        localStorage.setItem('ai_class_all_history', JSON.stringify(allHistory));
+        renderAnalytics();
+      }
+    }
+
+    initProjectorView();
+  </script>
+</body>
+</html>

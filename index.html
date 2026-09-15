@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Class Radar & Arena - 969-042G4</title>
-  <!-- Google Fonts: Kanit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,13 +20,7 @@
       --danger: #DC2626;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Kanit', sans-serif !important;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kanit', sans-serif !important; }
     body {
       background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
       color: var(--dark);
@@ -60,18 +53,8 @@
       margin-bottom: 0.6rem;
     }
 
-    h1 {
-      font-size: 1.65rem;
-      font-weight: 700;
-      color: var(--dark);
-      margin-bottom: 0.3rem;
-    }
-
-    p.subtitle {
-      font-size: 0.95rem;
-      color: #64748B;
-      margin-bottom: 1.5rem;
-    }
+    h1 { font-size: 1.65rem; font-weight: 700; color: var(--dark); margin-bottom: 0.3rem; }
+    p.subtitle { font-size: 0.95rem; color: #64748B; margin-bottom: 1.5rem; }
 
     .radar-box {
       position: relative;
@@ -95,11 +78,7 @@
       background: conic-gradient(from 0deg, transparent 70%, rgba(2, 132, 199, 0.45) 100%);
       animation: sweep 2s linear infinite;
     }
-
-    @keyframes sweep {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    @keyframes sweep { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     .radar-icon { font-size: 2.2rem; z-index: 2; }
 
@@ -112,6 +91,7 @@
       border-radius: 12px;
       font-size: 1rem;
       outline: none;
+      transition: all 0.2s;
     }
     input[type="text"]:focus { border-color: var(--primary); }
 
@@ -195,10 +175,9 @@
 <body>
 
   <div class="app-card">
-
-    <!-- STEP 1: เรดาร์ & ข้อมูลเข้าเรียน -->
+    <!-- STEP 1 -->
     <div id="step-register">
-      <div class="badge" id="currentSessionTag">969-042G4 • โหลดสัปดาห์...</div>
+      <div class="badge" id="currentSessionTag">969-042G4 • กำลังเชื่อมต่อ Cloud...</div>
       <h1>เช็คชื่อ & สนามประลองความรู้</h1>
       <p class="subtitle">ระบบจะตรวจจับพิกัดห้องเรียน และยืนยันรหัสเข้าห้องสด</p>
 
@@ -211,15 +190,7 @@
 
       <div class="form-group">
         <label for="roomPin">รหัสผ่านเข้าห้องสด (Room PIN บนจอหน้าห้อง)</label>
-        <input 
-        type="text" 
-        id="roomPin" 
-        placeholder="รหัส 4 หลัก" 
-        maxlength="4" 
-        inputmode="numeric" 
-        pattern="[0-9]*"
-        oninput="verifyRoomPinLive()"
-        >
+        <input type="text" id="roomPin" placeholder="รหัส 4 หลัก" maxlength="4" inputmode="numeric" oninput="verifyRoomPinLive()">
         <small id="pinFeedback" style="display:block; margin-top:0.3rem; font-size:0.85rem; font-weight:500;"></small>
       </div>
 
@@ -236,7 +207,7 @@
       <button class="btn" onclick="verifyAndStart()">สแกนพิกัด & เข้าสู่การประลอง 🚀</button>
     </div>
 
-    <!-- STEP 2: คำถามจับเวลา -->
+    <!-- STEP 2 -->
     <div id="step-quiz" class="hidden">
       <div class="game-header">
         <span id="stuInfoDisplay" style="font-weight: 500; font-size: 0.9rem; color:#64748B;"></span>
@@ -244,7 +215,7 @@
       </div>
       
       <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.85rem; color:#64748B;">
-        <span id="qCountDisplay">คำถาม 1/3</span>
+        <span id="qCountDisplay">คำถาม 1/4</span>
         <span class="score-badge" id="scoreDisplay">คะแนนสะสม: 0</span>
       </div>
 
@@ -252,26 +223,30 @@
       <div class="options-grid" id="optionsContainer"></div>
     </div>
 
-    <!-- STEP 3: ตารางอันดับสด (Leaderboard) -->
+    <!-- STEP 3 -->
     <div id="step-result" class="hidden">
       <div style="font-size: 2.8rem;">🏆</div>
       <h2 style="font-size: 1.5rem; color: var(--dark);">ยืนยันการเข้าเรียนสำเร็จ!</h2>
       <p class="subtitle" style="margin-bottom: 0.8rem;">คะแนนประจำคาบของคุณ: <strong id="myFinalScore" style="color: var(--primary); font-size: 1.3rem;"></strong></p>
 
-      <h3 style="text-align: left; font-size: 1rem; color:#475569; margin-top: 1rem;">🔥 ตารางอันดับประจำคาบ (Session Leaderboard)</h3>
+      <h3 style="text-align: left; font-size: 1rem; color:#475569; margin-top: 1rem;">🔥 ตารางอันดับประจำคาบ (Live Leaderboard)</h3>
       <div class="leaderboard-box" id="leaderboardList"></div>
 
-      <button class="btn btn-secondary" onclick="location.reload()">คนถัดไป / เสร็จสิ้น</button>
+      <button class="btn btn-secondary" onclick="location.reload()">เสร็จสิ้น</button>
     </div>
-
   </div>
 
   <script>
-    // พิกัดห้องเรียน 6310 อาคาร 6 มหาวิทยาลัยราชภัฏภูเก็ต (PKRU)
+    // *************************************************************
+    // วาง Database URL ของ Firebase เดียวกับหน้าอาจารย์ (ต้องลงท้ายด้วย /)
+    // *************************************************************
+    const FIREBASE_DB_URL = "https://class-psu-default-rtdb.asia-southeast1.firebasedatabase.app/";
+
+    // พิกัดห้องเรียน 6310 อาคาร 6 มหาวิทยาลัยสงขลานครินทร์ วิทยาเขตภูเก็ต
     const TARGET_LOCATION = {
-      lat: 7.893821,       // ละติจูดของอาคาร 6
-      lng: 98.353005,      // ลองจิจูดของอาคาร 6
-      radiusMeters: 90     // รัศมีที่อนุญาต (90 เมตร ครอบคลุมตัวอาคารและชั้นเรียน ป้องกันคนอยู่นอกตึก/หอพัก)
+      lat: 7.893821,
+      lng: 98.353005,
+      radiusMeters: 90
     };
 
     let clientIP = "กำลังดึงข้อมูล...";
@@ -286,8 +261,28 @@
         document.getElementById('geoStatus').innerText = "📡 เรดาร์พร้อมทำงาน";
       });
 
-    const activeSessionKey = localStorage.getItem('ai_current_session') || "Week 1 (16 ก.ย. 2569)";
-    document.getElementById('currentSessionTag').innerText = `969-042G4 • ${activeSessionKey}`;
+    let currentCloudPIN = "";
+    let activeSessionKey = "Week 1 (16 ก.ย. 2569)";
+
+    // ซิงก์ PIN และสัปดาห์ปัจจุบันจาก Cloud ตลอดเวลา
+    function listenToCloudUpdates() {
+      fetch(`${FIREBASE_DB_URL}current_pin.json`)
+        .then(res => res.json())
+        .then(pin => { currentCloudPIN = pin; })
+        .catch(err => console.error(err));
+
+      fetch(`${FIREBASE_DB_URL}current_session.json`)
+        .then(res => res.json())
+        .then(session => {
+          if (session) {
+            activeSessionKey = session;
+            document.getElementById('currentSessionTag').innerText = `969-042G4 • ${activeSessionKey}`;
+          }
+        })
+        .catch(err => console.error(err));
+    }
+    listenToCloudUpdates();
+    setInterval(listenToCloudUpdates, 2000); // ดึงอัปเดตทุก 2 วินาที
 
     const studentRoster = {
       "6730611001": "คุณานนต์ แพใหญ่", "6730611002": "สุชัญญา หลายกิจวุฒิพันธ์", "6730611004": "ชนาภา อุดมทรัพย์",
@@ -314,7 +309,6 @@
       "6730611085": "กันตินันท์ เนาวบุตร", "6730611086": "มูฮัมหมัดลุตฟี สีตีเล๊าะ"
     };
 
-    // ชุดคำถามควิซท้ายคาบ: สัปดาห์ที่ 1 (ปฐมนิเทศ & พื้นฐาน AI / PDPA)
     const questions = [
       {
         q: "1. โครงสร้างความสัมพันธ์ของเทคโนโลยี AI ข้อใดเรียงลำดับจาก 'ขอบเขตใหญ่สุด ไปหา ซับเซตย่อยสุด' ได้ถูกต้อง?",
@@ -324,7 +318,7 @@
           "Machine Learning (ML) ➔ Deep Learning (DL) ➔ Artificial Intelligence (AI)",
           "Artificial Intelligence (AI) ➔ Neural Networks ➔ Machine Learning (ML)"
         ],
-        answer: 1 // เฉลยข้อ B (AI -> ML -> DL)
+        answer: 1
       },
       {
         q: "2. ข้อใดอธิบายความแตกต่างระหว่าง 'Traditional AI' กับ 'Generative AI' ได้ตรงจุดที่สุด?",
@@ -334,7 +328,7 @@
           "Traditional AI เน้นวิเคราะห์และคาดการณ์จากข้อมูลเดิม ส่วน Generative AI เน้นสังเคราะห์และสร้างสรรค์เนื้อหาใหม่",
           "Traditional AI ทำงานเฉพาะบนหุ่นยนต์ ส่วน Generative AI ทำงานบนสมาร์ทโฟนเท่านั้น"
         ],
-        answer: 2 // เฉลยข้อ C (Analyze/Predict vs Generate New Content)
+        answer: 2
       },
       {
         q: "3. อาการ 'AI Hallucination' คืออะไร และแนวทางแก้ไขที่ดีที่สุดสำหรับนักศึกษาคือข้อใด?",
@@ -344,7 +338,7 @@
           "AI ตอบข้อมูลเท็จหรือแต่งเรื่องขึ้นเองอย่างมั่นใจ / ต้องทำ Fact-Checking ตรวจสอบแหล่งอ้างอิงเสมอ",
           "AI ปฏิเสธที่จะตอบคำถามเกี่ยวกับเรื่องทั่วไป / ต้องพิมพ์ขอร้อง AI ซ้ำๆ"
         ],
-        answer: 2 // เฉลยข้อ C (ตอบมั่นใจแต่มั่ว + ต้อง Fact-Check)
+        answer: 2
       },
       {
         q: "4. ตามกฎหมาย PDPA และจริยธรรมข้อมูล การกระทำใดถือเป็น 'ข้อห้ามร้ายแรง' เมื่อใช้งาน AI สาธารณะ (Public AI)?",
@@ -354,7 +348,7 @@
           "การขอให้ AI ช่วยสรุปใจความสำคัญจากรายงานวิจัยที่เผยแพร่เป็นสาธารณะ",
           "การใช้ AI ช่วยระดมไอเดียตั้งชื่อโปรเจกต์กลุ่ม"
         ],
-        answer: 1 // เฉลยข้อ B (ห้ามใส่ PII / ข้อมูลลับลง Public AI)
+        answer: 1
       }
     ];
 
@@ -362,7 +356,7 @@
     let score = 0;
     let timerInterval = null;
     let timeLeft = 15;
-    let studentData = { id: '', name: '', score: 0, timestamp: '', distance: 0, ip: '', session: activeSessionKey };
+    let studentData = { id: '', name: '', score: 0, timestamp: '', distance: 0, ip: '' };
 
     function autoFillName() {
       const id = document.getElementById('stuId').value.trim();
@@ -393,6 +387,33 @@
       }
     }
 
+    function verifyRoomPinLive() {
+      const pinInput = document.getElementById('roomPin');
+      const feedback = document.getElementById('pinFeedback');
+      const val = pinInput.value.trim();
+
+      if (val.length < 4) {
+        pinInput.style.borderColor = "#CBD5E1";
+        pinInput.style.backgroundColor = "white";
+        feedback.innerText = "";
+        return false;
+      }
+
+      if (val === currentCloudPIN) {
+        pinInput.style.borderColor = "var(--secondary)";
+        pinInput.style.backgroundColor = "#DEF7EC";
+        feedback.style.color = "var(--secondary)";
+        feedback.innerText = "✓ รหัสห้องถูกต้อง พร้อมสแกนพิกัด";
+        return true;
+      } else {
+        pinInput.style.borderColor = "var(--danger)";
+        pinInput.style.backgroundColor = "#FDE8E8";
+        feedback.style.color = "var(--danger)";
+        feedback.innerText = "✗ รหัสไม่ถูกต้องหรือหมดอายุแล้ว (รีเซ็ตทุก 2 นาที)";
+        return false;
+      }
+    }
+
     function calculateDistance(lat1, lon1, lat2, lon2) {
       const R = 6371e3;
       const φ1 = lat1 * Math.PI / 180;
@@ -407,43 +428,17 @@
       return R * c;
     }
 
-    function verifyRoomPinLive() {
-  const pinInput = document.getElementById('roomPin');
-  const feedback = document.getElementById('pinFeedback');
-  const enteredPin = pinInput.value.trim();
-  const currentActivePin = localStorage.getItem('ai_class_current_pin') || "7492";
-
-  // ยังพิมพ์ไม่ครบ 4 หลัก
-  if (enteredPin.length < 4) {
-    pinInput.style.borderColor = "#CBD5E1";
-    feedback.innerText = "";
-    return false;
-  }
-
-  // พิมพ์ครบ 4 หลักแล้ว ตรวจสอบทันที
-  if (enteredPin === currentActivePin) {
-    pinInput.style.borderColor = "var(--secondary)";
-    pinInput.style.backgroundColor = "#DEF7EC";
-    feedback.style.color = "var(--secondary)";
-    feedback.innerText = "✓ รหัสห้องถูกต้อง พร้อมสแกนพิกัด";
-    return true;
-  } else {
-    pinInput.style.borderColor = "var(--danger)";
-    pinInput.style.backgroundColor = "#FDE8E8";
-    feedback.style.color = "var(--danger)";
-    feedback.innerText = "✗ รหัสไม่ถูกต้อง หรือรหัสรอบนี้หมดอายุแล้ว (รีเซ็ตทุก 2 นาที)";
-    return false;
-  }
-}
+    function sanitizeKey(key) {
+      return key.replace(/[\.\#\$\[\]\/]/g, "_");
+    }
 
     function verifyAndStart() {
       const pin = document.getElementById('roomPin').value.trim();
       const id = document.getElementById('stuId').value.trim();
       const name = document.getElementById('stuName').value.trim();
-      const activePIN = localStorage.getItem('ai_class_current_pin') || "7492";
 
-      if (pin !== activePIN) {
-        alert("❌ รหัส Room PIN ไม่ถูกต้องหรือหมดอายุแล้ว! (รหัสจะรีเซ็ตทุก 2 นาที)");
+      if (pin !== currentCloudPIN) {
+        alert("❌ รหัส Room PIN ไม่ถูกต้องหรือหมดอายุแล้ว! (ดูรหัสสดบนจอหน้าห้อง)");
         return;
       }
       if (!id || !name) {
@@ -451,14 +446,21 @@
         return;
       }
 
-      const allHistory = JSON.parse(localStorage.getItem('ai_class_all_history') || '{}');
-      const currentSessionLogs = allHistory[activeSessionKey] || [];
+      const safeSession = sanitizeKey(activeSessionKey);
 
-      if (currentSessionLogs.some(item => item.id === id)) {
-        alert(`⚠️ รหัสนักศึกษานี้ได้ทำการเช็คชื่อใน ${activeSessionKey} ไปแล้ว!`);
-        return;
-      }
+      // เช็คการส่งซ้ำบน Cloud
+      fetch(`${FIREBASE_DB_URL}attendance/${safeSession}/${id}.json`)
+        .then(res => res.json())
+        .then(record => {
+          if (record) {
+            alert(`⚠️ รหัสนักศึกษานี้ได้ทำการเช็คชื่อใน ${activeSessionKey} ไปแล้ว!`);
+            return;
+          }
+          startGPSVerification(id, name);
+        });
+    }
 
+    function startGPSVerification(id, name) {
       const statusBox = document.getElementById('geoStatus');
       statusBox.innerText = "📡 กำลังเชื่อมต่อดาวเทียม GPS เพื่อยืนยันพิกัดห้องเรียน...";
 
@@ -565,22 +567,30 @@
 
     function finishGame() {
       studentData.score = score;
+      const safeSession = sanitizeKey(activeSessionKey);
 
-      let allHistory = JSON.parse(localStorage.getItem('ai_class_all_history') || '{}');
-      if (!allHistory[activeSessionKey]) {
-        allHistory[activeSessionKey] = [];
-      }
-      allHistory[activeSessionKey].push(studentData);
-      localStorage.setItem('ai_class_all_history', JSON.stringify(allHistory));
-
-      const logs = [...allHistory[activeSessionKey]];
-      logs.sort((a, b) => b.score - a.score);
+      // ส่งผลคะแนนขึ้น Cloud ทันที
+      fetch(`${FIREBASE_DB_URL}attendance/${safeSession}/${studentData.id}.json`, {
+        method: "PUT",
+        body: JSON.stringify(studentData)
+      })
+      .then(() => fetchLeaderboard(safeSession))
+      .catch(err => console.error(err));
 
       document.getElementById('step-quiz').classList.add('hidden');
       document.getElementById('step-result').classList.remove('hidden');
       document.getElementById('myFinalScore').innerText = `${score} แต้ม`;
+    }
 
-      renderLeaderboard(logs);
+    function fetchLeaderboard(safeSession) {
+      fetch(`${FIREBASE_DB_URL}attendance/${safeSession}.json`)
+        .then(res => res.json())
+        .then(records => {
+          if (!records) return;
+          const list = Object.values(records);
+          list.sort((a, b) => b.score - a.score);
+          renderLeaderboard(list);
+        });
     }
 
     function renderLeaderboard(logs) {
